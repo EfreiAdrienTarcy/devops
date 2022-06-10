@@ -1,49 +1,68 @@
-# Rapport - TP-1
+# Rapport - TP-2
 
 ## Choix techniques : 
-En sachant que l'application etait extremement légère  et qu'il n'yavais pas besoin d'un gros pasckage, j'ai choisis python:alpine3.16 
-pour l'image Docker car elle était extremement légère.
+J'ai utilisé Flask pour créer l'API car c'etait c'est une librairie simple d'utilisation adaptée à notre besoin
 
-Au niveau de l'affichage des différentes infos météo, il n'y avait pas de consignes précies, j'ai donc afficher quelques infos que je trouvais intéressantes.
-## Commandes effectuées :
-Après l'installation de docker, j'ai d'abord installé les différentes libraires que j'ai utilisé :
+Tout comme pour le TP-1, il n'y avait pas de consignes précises pour l'affichage des données météo. J'ai donc repris les meme données que la derniere fois.
+## Commandes effectuées - Local/Docker:
+La première étape a été d'installer flask :
 ```
-pip install requests
+pip install flask
 ```
-requests pour requeter l'API openweather
+
+Une fois l'importation faite, il fallait mettre à jour le fichier requirements.txt :
 ```
-pip install pipreqs
+pipreqs --force
+
 ```
-pipreqs pour générer facilement le fichier requirements.txt
+
+Une fois l'API developpée, J'ai effectué mes différents tests avec
+```
+flask run
+```
 
 Une fois mon code terminé, je l'ai ensuite tester une première fois avec 
 ```
 python weather.py
 ```
 
-Après avoir bugfix, j'ai ensuite start Docker pour ensuite build, test et publish mon container :
+Une fois sur du bon fonctionnement de l'API, je l'ai déployé sur Docker avec les commandes classiques :
 ```
 systemctl start docker
-```
-start
-```
-docker login -u adrientarcy
-```
-login
-```
-docker build . -t tp1_weather:0.0.1
-```
-build
 
-```
-docker run tp1_weather:0.0.1
-```
-test (les variables d'environnement etait ici spécifiée dans le fichier Dockerfile)
-```
-docker tag tp1_weather:0.0.1 adrientarcy/tp1-weather:0.0.1
+docker login -u adrientarcy
+
+docker build . -t efrei-devops-tp2:0.0.1
+
+docker tag efrei-devops-tp2:0.0.1 adrientarcy/efrei-devops-tp2:0.0.1
+
 docker push adrientarcy/tp1-weather:0.0.1
 ```
-publish
+
+## Commandes effectuées - Github Actions
+Définitino du trigger de la GitHub Action :
+```
+on:
+  push:
+    branches: [ main ]
+```
+login à DockerHub en utilisant les secrets
+```
+name: Login to DockerHub
+uses: docker/login-action@v2
+    with:
+        username: ${{ secrets.DOCKER_USER_NAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+```
+name: Build and push
+uses: docker/build-push-action@v3
+    with:
+        context: .
+        file: Dockerfile
+        push: true
+        ags: ${{ secrets.DOCKER_USER_NAME }}/efrei-devops-tp2:latest
+
+```
 
 ## Difficultés rencontrées :
-J'ai eu quelques difficultés au niveau de la création du container. J'avais un peu de mal avec l'ordre des différentes commande.
+Pas de difficultés particulières rencontrés sauf au niveau des GitHub Actions, le temps de les prendre en main
