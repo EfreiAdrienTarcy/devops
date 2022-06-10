@@ -7,7 +7,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    environment: docker_env
     steps:
       -
         name: Checkout
@@ -17,8 +16,8 @@ jobs:
         name: Login to DockerHub
         uses: docker/login-action@v2
         with:
-          username: ${{ docker_env.DOCKERHUB_USER_NAME }}
-          password: ${{ docker_env.DOCKERHUB_PASSWORD }}
+          username: ${{ secrets.DOCKERHUB_USER_NAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
       -
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
@@ -29,4 +28,4 @@ jobs:
           context: .
           file: Dockerfile
           push: true
-          tags: ${{ docker_env.DOCKERHUB_USER_NAME }}/efrei-devops-tp2:latest
+          tags: ${{ secrets.DOCKERHUB_USER_NAME }}/efrei-devops-tp2:latest
