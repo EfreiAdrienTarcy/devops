@@ -54,6 +54,8 @@ uses: docker/login-action@v2
         username: ${{ secrets.DOCKER_USER_NAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
 ```
+Build et déployement :
+```
 name: Build and push
 uses: docker/build-push-action@v3
     with:
