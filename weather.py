@@ -1,61 +1,39 @@
+from distutils.log import debug
 import os
+from flask import request
+from flask import Flask
 import requests
 import json
 
+app = Flask(__name__)
 
+
+@app.route('/', methods=['GET'])
 def main():
 
-    latitude = os.environ["LAT"]
-    longitude = os.environ["LONG"]
+    latitude = request.args.get("lat")
+    longitude = request.args.get("lon")
+
     key = os.environ["API_KEY"]
 
-    complete_url = "https://api.openweathermap.org/data/2.5/weather?lat="+str(latitude)+"&lon="+str(longitude)+"&appid="+str(key)
-   
+    complete_url = "https://api.openweathermap.org/data/2.5/weather?lat=" + \
+        str(latitude)+"&lon="+str(longitude)+"&appid="+str(key)
 
     response = requests.get(complete_url)
 
     rep = response.json()
 
     if rep["cod"] != "404":
-        # store the value of "main"
-        # key in variable y
-        y = rep["main"]
- 
-        # store the value corresponding
-        # to the "temp" key of y
-        current_temperature = y["temp"]
- 
-        # store the value corresponding
-        # to the "pressure" key of y
-        current_pressure = y["pressure"]
- 
-        # store the value corresponding
-        # to the "humidity" key of y
-        current_humidity = y["humidity"]
- 
-        # store the value of "weather"
-        # key in variable z
-        z = rep["weather"]
-    
-        # store the value corresponding
-        # to the "description" key at
-        # the 0th index of z
-        weather_description = z[0]["description"]
-    
-        # print following values
-        print(" Temperature (in kelvin unit) = " +
-                        str(current_temperature) +
-            "\n atmospheric pressure (in hPa unit) = " +
-                        str(current_pressure) +
-            "\n humidity (in percentage) = " +
-                        str(current_humidity) +
-            "\n description = " +
-                        str(weather_description))
-    
+        html_data = f"""
+            | '     '  + {str(rep['sys']['country'])} + '    ' | {str(rep['coord']['lon']) + ' ' 
+                                + str(rep['coord']['lat'])} | {str(rep['main']['temp']) + 'k'} | {str(rep['main']['pressure'])} | {str(rep['main']['humidity'])} |
+                """
     else:
-        print(" City Not Found ")
-
+        html_data = f" Location Not Found "
+    return html_data
 
 
 if __name__ == '__main__':
+    app.run(port = 8080,debug=True)
     main()
+
