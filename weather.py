@@ -25,7 +25,7 @@ def main():
 
     if rep["cod"] != "404":
         html_data = f"""
-            | '     '  + {str(rep['sys']['country'])} + '    ' | {str(rep['coord']['lon']) + ' ' 
+            |   {str(rep['sys']['country'])}   | {str(rep['coord']['lon']) + ' ' 
                                 + str(rep['coord']['lat'])} | {str(rep['main']['temp']) + 'k'} | {str(rep['main']['pressure'])} | {str(rep['main']['humidity'])} |
                 """
     else:
@@ -34,6 +34,6 @@ def main():
 
 
 if __name__ == '__main__':
-    app.run(port = 8080,debug=True)
+    app.run(port = 8081,debug=True)
     main()
 
